@@ -1,4 +1,5 @@
 import pickle
+from datetime import datetime
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
@@ -29,12 +30,21 @@ class Email:
                 pickle.dump(creds, token)
         return build('gmail', 'v1', credentials=creds)
 
+    def get_the_email(self):
+        #get today's date
+        today = datetime.now().strftime('%Y/%M/%D')
+
+        query = "from:ship@info.vercel.com subject:Vercel’s improved infrastructure pricing is:unread"
+
+        service = self.gmail_authenticate()
+        unreadMessage = service.users().messages().list(userId='me', q=query).execute()
+        return unreadMessage
 
 
 
 A = Email("atienofaith12@gmail.com")
-service = A.gmail_authenticate()
-print(service)
+emails = A.get_the_email()
+print(emails)
 
 
 
